@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Olyad X · ኦልያድ ኤክስ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Noto+Sans+Ethiopic:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --accent: #E84040;
+      --accent-glow: rgba(232,64,64,0.25);
+      --radius: 14px;
+      --transition: 0.3s ease;
+      --font-display: 'Space Grotesk', sans-serif;
+      --font-amharic: 'Noto Sans Ethiopic', sans-serif;
+    }
+    [data-theme="dark"] {
+      --bg: #0A0A0B;
+      --bg-card: #111113;
+      --bg-card-hover: #18181C;
+      --border: rgba(255,255,255,0.07);
+      --text-primary: #F0F0F2;
+      --text-secondary: #888899;
+      --text-muted: #44444F;
+      --nav-bg: rgba(10,10,11,0.85);
+      --toggle-bg: #1E1E22;
+    }
+    [data-theme="light"] {
+      --bg: #F4F4F6;
+      --bg-card: #FFFFFF;
+      --bg-card-hover: #FAFAFC;
+      --border: rgba(0,0,0,0.07);
+      --text-primary: #0A0A0B;
+      --text-secondary: #555566;
+      --text-muted: #AAAABC;
+      --nav-bg: rgba(244,244,246,0.85);
+      --toggle-bg: #E0E0E8;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{
+      font-family:var(--font-display);
+      background:var(--bg);color:var(--text-primary);
+      transition:background var(--transition),color var(--transition);
+      overflow-x:hidden;
+    }
+
+    /* NAV */
+    nav{
+      position:fixed;top:0;left:0;right:0;z-index:100;
+      background:var(--nav-bg);
+      backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+      border-bottom:1px solid var(--border);
+      display:flex;align-items:center;justify-content:space-between;
+      padding:0 clamp(1.2rem,5vw,3rem);height:64px;
+      transition:background var(--transition);
+    }
+    .nav-brand{display:flex;flex-direction:column;line-height:1.1;text-decoration:none}
+    .nav-brand .brand-en{font-size:1.05rem;font-weight:700;color:var(--text-primary);letter-spacing:-0.02em}
+    .nav-brand .brand-am{font-family:var(--font-amharic);font-size:0.68rem;color:var(--accent);letter-spacing:0.02em}
+    .nav-right{display:flex;align-items:center;gap:1rem}
+    .nav-links{display:flex;gap:0.2rem;list-style:none}
+    .nav-links a{
+      text-decoration:none;color:var(--text-secondary);font-size:0.85rem;font-weight:500;
+      padding:0.4rem 0.75rem;border-radius:8px;
+      transition:color var(--transition),background var(--transition);
+    }
+    .nav-links a:hover{color:var(--text-primary);background:var(--border)}
+    .theme-toggle{
+      background:var(--toggle-bg);border:1px solid var(--border);border-radius:50px;
+      cursor:pointer;width:52px;height:28px;position:relative;
+      transition:background var(--transition);flex-shrink:0;
+    }
+    .theme-toggle::after{
+      content:'';position:absolute;top:3px;left:3px;
+      width:20px;height:20px;border-radius:50%;
+      background:var(--text-secondary);
+      transition:transform var(--transition),background var(--transition);
+    }
+    [data-theme="light"] .theme-toggle::after{transform:translateX(24px);background:var(--accent)}
+    .toggle-icons{
+      position:absolute;inset:0;display:flex;align-items:center;
+      justify-content:space-between;padding:0 6px;pointer-events:none;font-size:11px;
+    }
+    .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;background:none;border:none}
+    .hamburger span{display:block;width:22px;height:2px;background:var(--text-primary);border-radius:2px;transition:transform var(--transition),opacity var(--transition)}
+    .mobile-menu{
+      display:none;position:fixed;top:64px;left:0;right:0;
+      background:var(--bg-card);border-bottom:1px solid var(--border);
+      padding:1rem;z-index:99;flex-direction:column;gap:0.3rem;
+    }
+    .mobile-menu.open{display:flex}
+    .mobile-menu a{
+      text-decoration:none;color:var(--text-secondary);font-size:1rem;font-weight:500;
+      padding:0.75rem 1rem;border-radius:10px;
+      transition:color var(--transition),background var(--transition);
+    }
+    .mobile-menu a:hover{color:var(--text-primary);background:var(--border)}
+
+    /* HERO */
+    .hero{
+      min-height:100svh;display:flex;flex-direction:column;
+      align-items:center;justify-content:center;text-align:center;
+      padding:100px clamp(1.2rem,5vw,3rem) 60px;position:relative;overflow:hidden;
+    }
+    .hero-glow{
+      position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+      width:min(700px,90vw);height:min(700px,90vw);
+      background:radial-gradient(circle,var(--accent-glow) 0%,transparent 65%);
+      pointer-events:none;animation:pulse 4s ease-in-out infinite;
+    }
+    @keyframes pulse{0%,100%{opacity:.6;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.08)}}
+    .hero-badge{
+      display:inline-flex;align-items:center;gap:.5rem;
+      background:var(--bg-card);border:1px solid var(--border);
+      border-radius:50px;padding:.35rem 1rem;font-size:.78rem;color:var(--text-secondary);
+      margin-bottom:2rem;animation:fadeUp .6s ease both;
+    }
+    .hero-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:blink 1.5s ease-in-out infinite}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+    .hero-title{
+      font-size:clamp(2.8rem,8vw,6rem);font-weight:700;
+      letter-spacing:-0.04em;line-height:1;animation:fadeUp .7s ease .1s both;
+    }
+    .hero-title .accent{color:var(--accent)}
+    .hero-amharic{
+      font-family:var(--font-amharic);font-size:clamp(1.1rem,3vw,1.8rem);
+      color:var(--text-secondary);margin-top:.6rem;font-weight:400;animation:fadeUp .7s ease .2s both;
+    }
+    .hero-desc{
+      max-width:480px;font-size:clamp(.9rem,2vw,1.05rem);color:var(--text-secondary);
+      line-height:1.7;margin-top:1.5rem;animation:fadeUp .7s ease .3s both;
+    }
+    .hero-cta{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:2.2rem;justify-content:center;animation:fadeUp .7s ease .4s both}
+    .btn-primary{
+      background:var(--accent);color:#fff;border:none;border-radius:10px;
+      padding:.75rem 1.8rem;font-family:var(--font-display);font-size:.9rem;font-weight:600;
+      cursor:pointer;text-decoration:none;
+      transition:opacity var(--transition),transform var(--transition),box-shadow var(--transition);
+      box-shadow:0 4px 20px var(--accent-glow);
+    }
+    .btn-primary:hover{opacity:.88;transform:translateY(-2px);box-shadow:0 8px 28px var(--accent-glow)}
+    .btn-outline{
+      background:transparent;color:var(--text-primary);border:1px solid var(--border);border-radius:10px;
+      padding:.75rem 1.8rem;font-family:var(--font-display);font-size:.9rem;font-weight:500;
+      cursor:pointer;text-decoration:none;transition:background var(--transition),transform var(--transition);
+    }
+    .btn-outline:hover{background:var(--bg-card);transform:translateY(-2px)}
+    .scroll-hint{
+      position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);
+      color:var(--text-muted);font-size:.75rem;
+      display:flex;flex-direction:column;align-items:center;gap:.4rem;
+      animation:fadeUp 1s ease .8s both;
+    }
+    .scroll-arrow{
+      width:20px;height:20px;border-right:2px solid var(--text-muted);border-bottom:2px solid var(--text-muted);
+      transform:rotate(45deg);animation:bounce 1.5s ease-in-out infinite;
+    }
+    @keyframes bounce{0%,100%{transform:rotate(45deg) translateY(0)}50%{transform:rotate(45deg) translateY(5px)}}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+    /* STATS */
+    .stats-bar{
+      display:flex;flex-wrap:wrap;justify-content:center;gap:1px;
+      background:var(--border);border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+    }
+    .stat-item{
+      flex:1 1 180px;display:flex;align-items:center;gap:.75rem;
+      background:var(--bg);padding:1.2rem 2rem;text-decoration:none;color:inherit;
+      transition:background var(--transition);
+    }
+    .stat-item:hover{background:var(--bg-card)}
+    .stat-icon{font-size:1.4rem;flex-shrink:0}
+    .stat-label{font-size:.78rem;color:var(--text-secondary)}
+    .stat-name{font-size:.92rem;font-weight:600}
+
+    /* SECTIONS */
+    section{padding:clamp(3rem,8vw,6rem) clamp(1.2rem,5vw,3rem)}
+    .section-eyebrow{font-size:.72rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:.75rem}
+    .section-title{font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;letter-spacing:-0.03em;line-height:1.15}
+    .section-header{max-width:1200px;margin:0 auto 2.5rem}
+
+    /* YOUTUBE */
+    #youtube{background:var(--bg)}
+    .youtube-grid{
+      max-width:1200px;margin:0 auto;
+      display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:1.5rem;
+    }
+    .yt-card{
+      background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);
+      overflow:hidden;transition:transform var(--transition),box-shadow var(--transition),background var(--transition);
+      text-decoration:none;color:inherit;display:flex;flex-direction:column;
+    }
+    .yt-card:hover{transform:translateY(-4px);background:var(--bg-card-hover);box-shadow:0 12px 40px rgba(0,0,0,.2)}
+    .yt-embed{width:100%;aspect-ratio:16/9;border:none;display:block}
+    .yt-channel-card{
+      max-width:1200px;margin:0 auto 2rem;background:var(--bg-card);border:1px solid var(--border);
+      border-radius:var(--radius);padding:1.5rem 2rem;display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;
+    }
+    .yt-channel-logo{
+      width:56px;height:56px;border-radius:50%;background:var(--accent);display:flex;
+      align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;font-weight:700;color:#fff;
+    }
+    .yt-channel-info{flex:1}
+    .yt-channel-name{font-size:1.05rem;font-weight:700}
+    .yt-channel-sub{font-size:.82rem;color:var(--text-secondary);margin-top:.2rem}
+    .btn-yt{
+      display:inline-flex;align-items:center;gap:.5rem;background:#FF0000;color:#fff;
+      border:none;border-radius:8px;padding:.6rem 1.2rem;font-family:var(--font-display);
+      font-size:.85rem;font-weight:600;cursor:pointer;text-decoration:none;
+      transition:opacity var(--transition),transform var(--transition);flex-shrink:0;
+    }
+    .btn-yt:hover{opacity:.85;transform:translateY(-1px)}
+
+    /* INSTAGRAM */
+    #instagram{background:var(--bg-card);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+    .ig-notice{
+      max-width:1200px;margin:0 auto;background:var(--bg);border:1px solid var(--border);
+      border-radius:var(--radius);padding:3rem 2rem;text-align:center;
+    }
+    .ig-icon-wrap{
+      width:72px;height:72px;border-radius:20px;margin:0 auto 1.5rem;
+      background:linear-gradient(135deg,#f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);
+      display:flex;align-items:center;justify-content:center;font-size:2rem;
+    }
+    .ig-notice h3{font-size:1.3rem;font-weight:700;margin-bottom:.75rem}
+    .ig-notice p{color:var(--text-secondary);font-size:.9rem;line-height:1.7;max-width:420px;margin:0 auto 1.5rem}
+    .btn-ig{
+      display:inline-flex;align-items:center;gap:.5rem;
+      background:linear-gradient(135deg,#f09433,#dc2743,#bc1888);
+      color:#fff;border:none;border-radius:8px;padding:.65rem 1.4rem;font-family:var(--font-display);
+      font-size:.88rem;font-weight:600;cursor:pointer;text-decoration:none;
+      transition:opacity var(--transition),transform var(--transition);
+    }
+    .btn-ig:hover{opacity:.85;transform:translateY(-1px)}
+
+    /* TIKTOK */
+    #tiktok{background:var(--bg)}
+    .tt-notice{
+      max-width:1200px;margin:0 auto;background:var(--bg-card);border:1px solid var(--border);
+      border-radius:var(--radius);padding:3rem 2rem;text-align:center;
+    }
+    .tt-icon-wrap{
+      width:72px;height:72px;border-radius:20px;margin:0 auto 1.5rem;background:#010101;
+      display:flex;align-items:center;justify-content:center;font-size:2.2rem;border:1px solid var(--border);
+    }
+    .tt-notice h3{font-size:1.3rem;font-weight:700;margin-bottom:.75rem}
+    .tt-notice p{color:var(--text-secondary);font-size:.9rem;line-height:1.7;max-width:420px;margin:0 auto 1.5rem}
+    .btn-tt{
+      display:inline-flex;align-items:center;gap:.5rem;background:#010101;color:#fff;
+      border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:.65rem 1.4rem;
+      font-family:var(--font-display);font-size:.88rem;font-weight:600;
+      cursor:pointer;text-decoration:none;transition:opacity var(--transition),transform var(--transition);
+    }
+    .btn-tt:hover{opacity:.8;transform:translateY(-1px)}
+
+    /* ABOUT */
+    #about{background:var(--bg-card);border-top:1px solid var(--border)}
+    .about-inner{
+      max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;
+    }
+    .about-text .section-title{margin-bottom:1.2rem}
+    .about-text p{color:var(--text-secondary);font-size:.95rem;line-height:1.8;margin-bottom:1rem}
+    .platform-chips{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.8rem}
+    .chip{
+      display:inline-flex;align-items:center;gap:.4rem;background:var(--bg);border:1px solid var(--border);
+      border-radius:50px;padding:.35rem .85rem;font-size:.8rem;font-weight:500;color:var(--text-secondary);
+    }
+    .about-visual{position:relative;display:flex;justify-content:center;align-items:center}
+    .about-card-stack{position:relative;width:240px;height:280px}
+    .stack-card{
+      position:absolute;width:180px;height:220px;border-radius:16px;border:1px solid var(--border);
+      display:flex;align-items:center;justify-content:center;font-size:2.5rem;
+    }
+    .stack-card:nth-child(1){background:#FF0000;bottom:0;left:0;transform:rotate(-8deg);opacity:.9}
+    .stack-card:nth-child(2){background:linear-gradient(135deg,#f09433,#dc2743,#bc1888);bottom:30px;left:30px;transform:rotate(-2deg)}
+    .stack-card:nth-child(3){background:#010101;border:2px solid rgba(105,201,208,.5);bottom:60px;left:60px;transform:rotate(4deg)}
+
+    /* FOOTER */
+    footer{background:var(--bg);border-top:1px solid var(--border);padding:2.5rem clamp(1.2rem,5vw,3rem)}
+    .footer-inner{
+      max-width:1200px;margin:0 auto;display:flex;flex-wrap:wrap;
+      align-items:center;justify-content:space-between;gap:1.5rem;
+    }
+    .footer-brand .brand-en{font-size:1rem;font-weight:700}
+    .footer-brand .brand-am{font-family:var(--font-amharic);font-size:.72rem;color:var(--accent)}
+    .footer-copy{font-size:.8rem;color:var(--text-muted)}
+    .footer-links{display:flex;gap:1rem;list-style:none}
+    .footer-links a{font-size:.82rem;color:var(--text-secondary);text-decoration:none;transition:color var(--transition)}
+    .footer-links a:hover{color:var(--text-primary)}
+
+    /* CONTACT */
+    #contact{background:var(--bg);border-top:1px solid var(--border)}
+    .contact-inner{max-width:1200px;margin:0 auto}
+    .contact-grid{
+      display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:1.2rem;margin-top:0;
+    }
+    .contact-card{
+      background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);
+      padding:2rem 1.8rem;display:flex;flex-direction:column;align-items:flex-start;gap:1rem;
+      text-decoration:none;color:inherit;
+      transition:transform var(--transition),box-shadow var(--transition),background var(--transition);
+      position:relative;overflow:hidden;
+    }
+    .contact-card::before{
+      content:'';position:absolute;inset:0;opacity:0;
+      transition:opacity var(--transition);
+    }
+    .contact-card.tg-dm::before{background:radial-gradient(circle at top left,rgba(39,174,255,.08),transparent 60%)}
+    .contact-card.tg-ch::before{background:radial-gradient(circle at top left,rgba(39,174,255,.06),transparent 60%)}
+    .contact-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,.18)}
+    .contact-card:hover::before{opacity:1}
+    .contact-card:hover{background:var(--bg-card-hover)}
+    .contact-icon-wrap{
+      width:52px;height:52px;border-radius:14px;
+      display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;
+    }
+    .tg-blue{background:linear-gradient(135deg,#2AABEE,#229ED9)}
+    .contact-card-label{font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)}
+    .contact-card-title{font-size:1.05rem;font-weight:700}
+    .contact-card-desc{font-size:.85rem;color:var(--text-secondary);line-height:1.6;flex:1}
+    .contact-card-cta{
+      display:inline-flex;align-items:center;gap:.4rem;
+      background:#229ED9;color:#fff;border:none;border-radius:8px;
+      padding:.55rem 1.1rem;font-family:var(--font-display);font-size:.82rem;font-weight:600;
+      cursor:pointer;text-decoration:none;margin-top:.25rem;
+      transition:opacity var(--transition),transform var(--transition);
+    }
+    .contact-card-cta:hover{opacity:.85;transform:translateY(-1px)}
+    .contact-hero-text{
+      max-width:560px;margin-bottom:2.5rem;
+    }
+    .contact-hero-text p{color:var(--text-secondary);font-size:.95rem;line-height:1.7;margin-top:.75rem}
+
+    /* RESPONSIVE */
+    @media(max-width:768px){
+      .nav-links{display:none}
+      .hamburger{display:flex}
+      .about-inner{grid-template-columns:1fr;gap:2rem}
+      .about-visual{display:none}
+      .stat-item{flex:1 1 140px;padding:1rem 1.2rem}
+    }
+    @media(max-width:480px){.yt-channel-card{flex-direction:column;align-items:flex-start}}
+
+    /* REVEAL */
+    .reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
+    .reveal.visible{opacity:1;transform:translateY(0)}
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="#top">
+    <span class="brand-en">Olyad X</span>
+    <span class="brand-am">ኦልያድ ኤክስ</span>
+  </a>
+  <div class="nav-right">
+    <ul class="nav-links">
+      <li><a href="#youtube">YouTube</a></li>
+      <li><a href="#instagram">Instagram</a></li>
+      <li><a href="#tiktok">TikTok</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+      <div class="toggle-icons"><span>🌙</span><span>☀️</span></div>
+    </button>
+    <button class="hamburger" id="hamburger" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#youtube" onclick="closeMobile()">YouTube</a>
+  <a href="#instagram" onclick="closeMobile()">Instagram</a>
+  <a href="#tiktok" onclick="closeMobile()">TikTok</a>
+  <a href="#about" onclick="closeMobile()">About</a>
+  <a href="#contact" onclick="closeMobile()">Contact</a>
+</div>
+
+<section class="hero" id="top">
+  <div class="hero-glow"></div>
+  <div class="hero-badge"><span class="dot"></span>Creating content across all platforms</div>
+  <h1 class="hero-title">Olyad <span class="accent">X</span></h1>
+  <p class="hero-amharic">ኦልያድ ኤክስ</p>
+  <p class="hero-desc">One place to explore all my content — from YouTube videos to Instagram posts and TikTok clips.</p>
+  <div class="hero-cta">
+    <a href="#youtube" class="btn-primary">Watch Videos</a>
+    <a href="#about" class="btn-outline">Learn More</a>
+  </div>
+  <div class="scroll-hint"><div class="scroll-arrow"></div></div>
+</section>
+
+<div class="stats-bar">
+  <a class="stat-item" href="https://www.youtube.com/@OlyadX/videos" target="_blank" rel="noopener">
+    <span class="stat-icon">▶️</span>
+    <div><div class="stat-label">Watch on</div><div class="stat-name">YouTube</div></div>
+  </a>
+  <a class="stat-item" href="https://www.instagram.com/_its.olyadx11/" target="_blank" rel="noopener">
+    <span class="stat-icon">📸</span>
+    <div><div class="stat-label">Follow on</div><div class="stat-name">Instagram</div></div>
+  </a>
+  <a class="stat-item" href="https://www.tiktok.com/@olyadxcreative" target="_blank" rel="noopener">
+    <span class="stat-icon">🎵</span>
+    <div><div class="stat-label">Follow on</div><div class="stat-name">TikTok</div></div>
+  </a>
+  <a class="stat-item" href="https://t.me/olyadX" target="_blank" rel="noopener">
+    <span class="stat-icon">✈️</span>
+    <div><div class="stat-label">Join on</div><div class="stat-name">Telegram</div></div>
+  </a>
+</div>
+
+<section id="youtube">
+  <div class="section-header reveal">
+    <p class="section-eyebrow">Video Content</p>
+    <h2 class="section-title">YouTube</h2>
+  </div>
+  <div class="yt-channel-card reveal">
+    <div class="yt-channel-logo">OX</div>
+    <div class="yt-channel-info">
+      <div class="yt-channel-name">@OlyadX</div>
+      <div class="yt-channel-sub">Watch the latest videos on the channel</div>
+    </div>
+    <a href="https://www.youtube.com/@OlyadX/videos" target="_blank" rel="noopener" class="btn-yt">▶ Visit Channel</a>
+  </div>
+  <div class="youtube-grid reveal">
+    <div class="yt-card" style="grid-column:1/-1;border-radius:var(--radius);overflow:hidden">
+      <iframe
+        class="yt-embed"
+        style="height:clamp(300px,50vw,560px)"
+        src="https://www.youtube.com/embed?listType=user_uploads&list=OlyadX"
+        title="OlyadX YouTube Channel"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen loading="lazy"
+      ></iframe>
+    </div>
+  </div>
+</section>
+
+<section id="instagram">
+  <div class="section-header reveal">
+    <p class="section-eyebrow">Photos & Stories</p>
+    <h2 class="section-title">Instagram</h2>
+  </div>
+  <div class="ig-notice reveal">
+    <div class="ig-icon-wrap">📷</div>
+    <h3>Follow on Instagram</h3>
+    <p>Instagram doesn't allow direct embedding of posts on external websites. Head to the profile to see all the latest photos, reels, and stories.</p>
+    <a href="https://www.instagram.com/_its.olyadx11/" target="_blank" rel="noopener" class="btn-ig">📸 @_its.olyadx11</a>
+  </div>
+</section>
+
+<section id="tiktok">
+  <div class="section-header reveal">
+    <p class="section-eyebrow">Short Videos</p>
+    <h2 class="section-title">TikTok</h2>
+  </div>
+  <div class="tt-notice reveal">
+    <div class="tt-icon-wrap">🎵</div>
+    <h3>Find me on TikTok</h3>
+    <p>TikTok restricts embedding on external websites. Visit the TikTok profile directly to watch all the short videos and clips.</p>
+    <a href="https://www.tiktok.com/@olyadxcreative" target="_blank" rel="noopener" class="btn-tt">🎵 @olyadxcreative</a>
+  </div>
+</section>
+
+<section id="about">
+  <div class="about-inner">
+    <div class="about-text reveal">
+      <p class="section-eyebrow">The Creator</p>
+      <h2 class="section-title">About Olyad X</h2>
+      <p>Welcome to Olyad X — ኦልያድ ኤክስ. This is your one-stop hub to connect with all content across platforms. Whether it's long-form YouTube videos, Instagram visuals, or TikTok clips, everything lives here.</p>
+      <p>Follow along and be part of the journey across every platform.</p>
+      <div class="platform-chips">
+        <span class="chip">▶️ YouTube</span>
+        <span class="chip">📸 Instagram</span>
+        <span class="chip">🎵 TikTok</span>
+      </div>
+    </div>
+    <div class="about-visual">
+      <div class="about-card-stack">
+        <div class="stack-card">▶️</div>
+        <div class="stack-card">📸</div>
+        <div class="stack-card">🎵</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="contact-inner">
+    <div class="section-header reveal" style="margin-bottom:0">
+      <p class="section-eyebrow">Get in Touch</p>
+      <h2 class="section-title">Contact Me</h2>
+      <div class="contact-hero-text">
+        <p>Want to collaborate, ask a question, or just say hello? Reach out directly on Telegram — whether through a personal message or by joining the community channel.</p>
+      </div>
+    </div>
+    <div class="contact-grid reveal">
+
+      <!-- Personal DM -->
+      <a class="contact-card tg-dm" href="https://t.me/OLYADXAGENT" target="_blank" rel="noopener">
+        <div class="contact-icon-wrap tg-blue">✈️</div>
+        <div class="contact-card-label">Direct Message</div>
+        <div class="contact-card-title">Message Me Personally</div>
+        <div class="contact-card-desc">Have a question, a collaboration idea, or just want to chat? Send me a direct message on Telegram and I'll get back to you.</div>
+        <span class="contact-card-cta">✈️ DM @OLYADXAGENT</span>
+      </a>
+
+      <!-- Telegram Channel -->
+      <a class="contact-card tg-ch" href="https://t.me/olyadX" target="_blank" rel="noopener">
+        <div class="contact-icon-wrap tg-blue">📢</div>
+        <div class="contact-card-label">Telegram Channel</div>
+        <div class="contact-card-title">Join the Channel</div>
+        <div class="contact-card-desc">Stay updated with announcements, new content drops, and exclusive updates by joining the official Olyad X Telegram channel.</div>
+        <span class="contact-card-cta">📢 Join @olyadX</span>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="brand-en">Olyad X</div>
+      <div class="brand-am">ኦልያድ ኤክስ</div>
+    </div>
+    <p class="footer-copy">© 2026 Olyad X. All rights reserved.</p>
+    <ul class="footer-links">
+      <li><a href="https://www.youtube.com/@OlyadX/videos" target="_blank" rel="noopener">YouTube</a></li>
+      <li><a href="https://www.instagram.com/_its.olyadx11/" target="_blank" rel="noopener">Instagram</a></li>
+      <li><a href="https://www.tiktok.com/@olyadxcreative" target="_blank" rel="noopener">TikTok</a></li>
+      <li><a href="https://t.me/olyadX" target="_blank" rel="noopener">Telegram</a></li>
+      <li><a href="https://t.me/OLYADXAGENT" target="_blank" rel="noopener">DM</a></li>
+    </ul>
+  </div>
+</footer>
+
+<script>
+  const html = document.documentElement;
+  const toggleBtn = document.getElementById('themeToggle');
+  const saved = localStorage.getItem('olyadx-theme') || 'dark';
+  html.setAttribute('data-theme', saved);
+  toggleBtn.addEventListener('click', () => {
+    const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    localStorage.setItem('olyadx-theme', next);
+  });
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  hamburger.addEventListener('click', () => mobileMenu.classList.toggle('open'));
+  function closeMobile() { mobileMenu.classList.remove('open'); }
+  document.addEventListener('click', e => {
+    if (!hamburger.contains(e.target) && !mobileMenu.contains(e.target)) mobileMenu.classList.remove('open');
+  });
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
